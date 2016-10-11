@@ -1,4 +1,5 @@
-const express = require('express');
-const app = express();
+const Twitch = require('../controllers/TwitchController');
 
-app.get('/api/twitch');
+module.exports = function(app) {
+  app.get('/api/twitchSetup', Twitch.setupConnection);
+};
