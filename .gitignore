@@ -4,3 +4,4 @@ dist
 .idea/
 TellyNet.iml
 config
+logs/tellynet.log

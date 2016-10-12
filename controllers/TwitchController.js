@@ -1,6 +1,7 @@
 
 const TwitchIRC = require('tmi.js');
 const config = require('../config/config');
+const logger = require('winston');
 
 // Configurations stored using node-convict
 const options = {
@@ -8,7 +9,7 @@ const options = {
     debug: config.get('twitch').debug,
     clientId: config.get('twitch').clientId,
     connection: {
-      reconnect: true
+      reconnect: config.get('twitch').reconnect
     },
     identity: {
       username: config.get('twitch').username,
@@ -34,7 +35,7 @@ function setupConnection(channel) {
       });
     })
     .catch((err) => {
-      //@TODO: put logger error here
+      logger.log('error', 'Twitch IRC client error: ', err);
     });
 
 }
