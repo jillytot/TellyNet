@@ -1,16 +1,16 @@
-# telly-net [![Build Status](https://travis-ci.org/JacquiManzi/TellyNet.svg?branch=master)](https://travis-ci.org/JacquiManzi/TellyNet)
+# TellyNet [![Build Status](https://travis-ci.org/JacquiManzi/TellyNet.svg?branch=master)](https://travis-ci.org/JacquiManzi/TellyNet)
 > 
 
 ## Installation
 
 ```sh
-$ npm install --save telly-net
+ Coming soon
 ```
 
 ## Usage
 
 ```js
-var tellyNet = require('telly-net');
+ Coming soon
 ```
 ## License
 
