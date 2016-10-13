@@ -1,4 +1,4 @@
-# telly-net [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url] [![Coverage percentage][coveralls-image]][coveralls-url]
+# telly-net [![Build Status](https://travis-ci.org/JacquiManzi/TellyNet.svg?branch=master)](https://travis-ci.org/JacquiManzi/TellyNet)
 > 
 
 ## Installation
@@ -16,8 +16,8 @@ var tellyNet = require('telly-net');
 
 MIT © [Jacqui Manzi]()
 
-[travis-image]: https://travis-ci.org//telly-net.svg?branch=master
-[travis-url]: https://travis-ci.org//telly-net
+[travis-image]: https://travis-ci.org/JacquiManzi/TellyNet.svg?branch=master
+[travis-url]: https://travis-ci.org//TellyNet
 [daviddm-image]: https://david-dm.org//telly-net.svg?theme=shields.io
 [daviddm-url]: https://david-dm.org//telly-net
 [coveralls-image]: https://coveralls.io/repos//telly-net/badge.svg
