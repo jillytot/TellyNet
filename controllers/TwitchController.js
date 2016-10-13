@@ -1,5 +1,6 @@
 
 const TwitchIRC = require('tmi.js');
+const StreamParser = require('../src/parsers/StreamParser');
 const config = require('../config/config');
 const logger = require('winston');
 
@@ -21,6 +22,11 @@ const options = {
 
 const client = new TwitchIRC.client(options);
 
+/**
+ *
+ * Setup a twitch connection on a given channel
+ * @param channel
+ */
 function setupConnection(channel) {
 
   client
@@ -30,9 +36,12 @@ function setupConnection(channel) {
   })
     .then(() => {
 
-      client.on('chat', (channel, user, message, self) => {
-        //@TODO: Start parsing here
+      // Listen for chat events on the specified Twitch Channel
+      client.on('chat', (channel, user, message) => {
+
+        return StreamParser.parseTwitchContent(user, message);
       });
+
     })
     .catch((err) => {
       logger.log('error', 'Twitch IRC client error: ', err);
