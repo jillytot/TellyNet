@@ -14,8 +14,8 @@ app.get('/', function (req, res) {
  * Setup express routing
  */
 const fs = require('fs');
-var routePath = './routes/'; //add one folder then put your route files there my router folder name is routers
-fs.readdirSync(routePath).forEach(function(file) {
+var routePath = './routes/'; // add one folder then put your route files there my router folder name is routers
+fs.readdirSync(routePath).forEach(file => {
   var route = '../' + routePath + file;
   require(route)(app);
 });
@@ -24,13 +24,11 @@ fs.readdirSync(routePath).forEach(function(file) {
  * Connecting to the express server
  * @type {http.Server}
  */
-const server = app.listen(config.get('port'), function() {
+const server = app.listen(config.get('port'), () => {
   const host = server.address().address;
   const port = server.address().port;
 
   logger.log('info', 'TellyNet activated http://%s:%s', host, port);
 
-  //@TODO: provide list of channels and loop through
-  Twitch.setupConnection(config.get('twitch').channels[0]);
-
+  Twitch.setupConnection(config.get('twitch').events);
 });

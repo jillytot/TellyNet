@@ -78,10 +78,10 @@ gulp.task('clean', function () {
 
 gulp.task('start', function () {
   nodemon({
-    script: 'src/server.js'
-    , ext: 'js html'
-    , env: { 'NODE_ENV': 'development' }
-  })
+    script: 'src/server.js',
+    ext: 'js html',
+    env: {NODE_ENV: 'development'}
+  });
 });
 
 gulp.task('prepublish', ['nsp', 'babel']);

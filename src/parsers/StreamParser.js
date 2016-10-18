@@ -1,6 +1,3 @@
-
-
-
 function StreamParser() {
 }
 
@@ -10,16 +7,18 @@ function StreamParser() {
  * @param message
  * @returns {{user: *, message: *, timestamp: *, subscriber: *, mod: (*|module.exports.mod), message_type: *}}
  */
-StreamParser.prototype.parseTwitchContent = function(user, message) {
-
+StreamParser.prototype.parseTwitchContent = function (user, message) {
   return {
-    user: user,
+    user: user.username,
     message: message,
     timestamp: user['sent-ts'],
-    subscriber: user.subscriber,
-    mod: user.mod,
-    message_type: user['message-type']
-  }
+    userTypes: {
+      subscriber: user.subscriber,
+      mod: user.mod,
+      turbo: user.turbo
+    },
+    messageType: user['message-type']
+  };
 };
 
 module.exports = new StreamParser();

@@ -1,3 +1,4 @@
+/* eslint new-cap: 0 */
 
 const TwitchIRC = require('tmi.js');
 const StreamParser = require('../src/parsers/StreamParser');
@@ -5,7 +6,7 @@ const config = require('../config/config');
 const logger = require('winston');
 
 // Configurations stored using node-convict
-const options = {
+const clientConfig = {
   options: {
     debug: config.get('twitch').debug,
     clientId: config.get('twitch').clientId,
@@ -20,33 +21,63 @@ const options = {
   }
 };
 
-const client = new TwitchIRC.client(options);
+const client = new TwitchIRC.client(clientConfig.options);
+
+const eventListenerMappings = {
+  action: registerActionListener,
+  message: registerMessageListener,
+  ban: registerBanListener,
+  chat: registerChatListener,
+  cheer: registerCheerListener
+};
 
 /**
- *
- * Setup a twitch connection on a given channel
- * @param channel
+ * Setup a twitch connection and join the channels listed in the config
  */
-function setupConnection(channel) {
-
+function setupConnection(events) {
   client
     .connect()
     .then(() => {
-      return client.join(channel)
-  })
-    .then(() => {
-
-      // Listen for chat events on the specified Twitch Channel
-      client.on('chat', (channel, user, message) => {
-
-        return StreamParser.parseTwitchContent(user, message);
-      });
-
+      // Register event listeners for the event names given
+      if (events) {
+        events.forEach(eventName => {
+          eventListenerMappings[eventName]();
+        });
+      }
     })
-    .catch((err) => {
+    .catch(err => {
       logger.log('error', 'Twitch IRC client error: ', err);
     });
+}
 
+function registerActionListener() {
+  client.on('action', (channel, userstate, message) => {
+    return console.log(StreamParser.parseTwitchContent(userstate, message));
+  });
+}
+
+function registerMessageListener() {
+  client.on('message', (channel, userstate, message) => {
+    return console.log(StreamParser.parseTwitchContent(userstate, message));
+  });
+}
+
+function registerBanListener() {
+  /* client.on('ban', (channel, username, reason) => {
+    //@TODO
+  }); */
+}
+
+function registerChatListener() {
+  /* client.on('chat', (channel, userstate, message) => {
+    //@TODO
+  }); */
+}
+
+function registerCheerListener() {
+  /* client.on('cheer', (channel, userstate, message) => {
+    //@TODO
+  }); */
 }
 
 module.exports.setupConnection = setupConnection;
