@@ -2,6 +2,7 @@
 
 const TwitchIRC = require('tmi.js');
 const StreamParser = require('../src/parsers/StreamParser');
+
 const config = require('../config/config');
 const logger = require('winston');
 
@@ -52,13 +53,13 @@ function setupConnection(events) {
 
 function registerActionListener() {
   client.on('action', (channel, userstate, message) => {
-    return console.log(StreamParser.parseTwitchContent(userstate, message));
+    return StreamParser.parseTwitchContent(userstate, message);
   });
 }
 
 function registerMessageListener() {
   client.on('message', (channel, userstate, message) => {
-    return console.log(StreamParser.parseTwitchContent(userstate, message));
+    return StreamParser.parseTwitchContent(userstate, message);
   });
 }
 

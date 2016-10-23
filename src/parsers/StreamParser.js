@@ -1,3 +1,23 @@
+/**
+ *  StreamParser
+ */
+
+const commands = {
+  left: 'left',
+  l: 'left',
+  right: 'right',
+  r: 'right',
+  up: 'up',
+  u: 'up',
+  down: 'down',
+  d: 'down',
+  ll: 'left left'
+};
+
+/**
+ *
+ * @constructor
+ */
 function StreamParser() {
 }
 
@@ -8,6 +28,10 @@ function StreamParser() {
  * @returns {{user: *, message: *, timestamp: *, subscriber: *, mod: (*|module.exports.mod), message_type: *}}
  */
 StreamParser.prototype.parseTwitchContent = function (user, message) {
+  if (commands[message]) {
+    console.log(message);
+  }
+
   return {
     user: user.username,
     message: message,

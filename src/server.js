@@ -1,6 +1,8 @@
 
 const express = require('express');
 const app = express();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 const config = require('../config/config');
 const logger = require('../logs/log');
 
@@ -24,11 +26,18 @@ fs.readdirSync(routePath).forEach(file => {
  * Connecting to the express server
  * @type {http.Server}
  */
-const server = app.listen(config.get('port'), () => {
+const server = http.listen(config.get('port'), () => {
   const host = server.address().address;
   const port = server.address().port;
 
   logger.log('info', 'TellyNet activated http://%s:%s', host, port);
 
   Twitch.setupConnection(config.get('twitch').events);
+});
+
+/**
+ *  Initiate Socket IO, listen for socket connections
+ */
+io.on('connection', function(socket){
+  console.log('a user connected');
 });
