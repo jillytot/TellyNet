@@ -5,6 +5,7 @@ const StreamParser = require('../src/parsers/StreamParser');
 
 const config = require('../config/config');
 const logger = require('winston');
+const connectionManager = require('../src/server');
 
 // Configurations stored using node-convict
 const clientConfig = {
@@ -59,6 +60,8 @@ function registerActionListener() {
 
 function registerMessageListener() {
   client.on('message', (channel, userstate, message) => {
+    console.log(message);
+    connectionManager.cm.socketConnections[0].sendUTF('f');
     return StreamParser.parseTwitchContent(userstate, message);
   });
 }
