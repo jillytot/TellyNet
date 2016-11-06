@@ -60,8 +60,7 @@ function registerActionListener() {
 
 function registerMessageListener() {
   client.on('message', (channel, userstate, message) => {
-    console.log(message);
-    connectionManager.cm.socketConnections[0].sendUTF('f');
+    connectionManager.cm.socketConnections[0].sendUTF(message);
     return StreamParser.parseTwitchContent(userstate, message);
   });
 }
