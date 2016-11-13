@@ -54,10 +54,9 @@ ConnectionManager.prototype.setupListeners = function setupListeners() {
 };
 
 function originIsAllowed(origin) {
-  console.log(origin);
-  //@TODO: Set the origin of the web socket and verify here
-  //return config.get('allowedOrigins').indexOf(origin) !== -1;
-  return true;
+  // @TODO: Set the origin of the web socket and verify here
+  // return config.get('allowedOrigins').indexOf(origin) !== -1;
+  return origin !== undefined;
 }
 
 module.exports = ConnectionManager;
