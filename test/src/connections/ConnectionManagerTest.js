@@ -4,6 +4,8 @@ import sinon from 'sinon';
 const http = require('http');
 const httpPort = 8888;
 let server;
+const EventEmitter = require('events').EventEmitter;
+
 const ConnectionManager = require('../../../src/connections/ConnectionManager');
 
 describe('ConnectionManager', function () {
@@ -26,7 +28,6 @@ describe('ConnectionManager', function () {
   });
 
   it('sets up a request listener on the server', function() {
-    /* const connectionManager = new ConnectionManager(server);
-    assert(connectionManager.socketConnections.length === 1); */
+    //@TODO
   });
 });
