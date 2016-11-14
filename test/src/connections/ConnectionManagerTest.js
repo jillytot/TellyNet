@@ -24,4 +24,9 @@ describe('ConnectionManager', function () {
     assert(Array.isArray(connectionManager.socketConnections), 'socketConnections is an array');
     assert(setupListenersStub.calledOnce);
   });
+
+  it('sets up a request listener on the server', function() {
+    /* const connectionManager = new ConnectionManager(server);
+    assert(connectionManager.socketConnections.length === 1); */
+  });
 });

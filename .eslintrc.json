@@ -1,0 +1,14 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "parser": "esprima",
+  "rules": {
+    "semi": "error",
+    "space-before-function-paren": 0
+  }
+}
