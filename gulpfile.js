@@ -6,7 +6,6 @@ var mocha = require('gulp-mocha');
 var istanbul = require('gulp-istanbul');
 var nsp = require('gulp-nsp');
 var plumber = require('gulp-plumber');
-var coveralls = require('gulp-coveralls');
 var babel = require('gulp-babel');
 var del = require('del');
 var isparta = require('isparta');
@@ -57,15 +56,6 @@ gulp.task('watch', function () {
   gulp.watch(['src/**/*.js', 'test/**'], ['test']);
 });
 
-gulp.task('coveralls', ['test'], function () {
-  if (!process.env.CI) {
-    return;
-  }
-
-  return gulp.src(path.join(__dirname, 'coverage/lcov.info'))
-    .pipe(coveralls());
-});
-
 gulp.task('babel', ['clean'], function () {
   return gulp.src('lib/**/*.js')
     .pipe(babel())
@@ -85,4 +75,4 @@ gulp.task('start', function () {
 });
 
 gulp.task('prepublish', ['nsp', 'babel']);
-gulp.task('default', ['static', 'test', 'coveralls']);
+gulp.task('default', ['static', 'test']);
