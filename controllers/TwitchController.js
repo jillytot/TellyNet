@@ -5,7 +5,7 @@ const StreamParser = require('../src/parsers/StreamParser');
 
 const config = require('../config/config');
 const logger = require('winston');
-const connectionManager = require('../src/server');
+const server = require('../src/server');
 
 // Configurations stored using node-convict
 const clientConfig = {
@@ -40,6 +40,7 @@ function setupConnection(events) {
   client
     .connect()
     .then(() => {
+      console.log('connected to twitch');
       // Register event listeners for the event names given
       if (events) {
         events.forEach(eventName => {
@@ -60,7 +61,12 @@ function registerActionListener() {
 
 function registerMessageListener() {
   client.on('message', (channel, userstate, message) => {
-    connectionManager.cm.socketConnections[0].sendUTF(message);
+
+    if (server.cm.socketConnections.length) {
+      console.log(message);
+      server.cm.socketConnections[0].sendUTF(message);
+    }
+
     return StreamParser.parseTwitchContent(userstate, message);
   });
 }
