@@ -27,19 +27,16 @@ ConnectionManager.prototype.setupListeners = function setupListeners() {
 
     if (!originIsAllowed(request.origin)) {
       // Make sure we only accept requests from an allowed origin
-      logger.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
       request.reject();
-      logger.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
+      logger.log('info', (new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
       return;
     }
 
     const connection = request.accept(undefined, request.origin);
     this.socketConnections.push(connection);
 
-    logger.log(new Date() + ' Connection accepted.');
-    console.log('connection accepted');
+    logger.log('info', new Date() + ' Connection accepted.');
     connection.on('message', message => {
-      console.log(message);
       if (message.type === 'utf8') {
         connection.sendUTF(message.utf8Data);
       }
@@ -55,7 +52,7 @@ ConnectionManager.prototype.setupListeners = function setupListeners() {
         this.socketConnections.splice(index, 1);
       }
 
-      logger.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
+      logger.log('info', (new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
     });
   });
 

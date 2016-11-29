@@ -30,7 +30,7 @@ fs.readdirSync(routePath).forEach(file => {
  * Connecting to the express server
  * @type {http.Server}
  */
-const server = http.listen(config.get('port'), () => {
+const server = http.listen(config.get('port'), config.get('ip'),() => {
   const host = server.address().address;
   const port = server.address().port;
 
