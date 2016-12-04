@@ -1,68 +1,49 @@
 /* eslint new-cap: 0 */
 /* eslint padded-blocks: 0 */
 /* eslint brace-style: 0 */
-const WebSocketServer = require('websocket').server;
 const logger = require('winston');
+const net = require('net');
 
 /**
  * ConnectionManager - Web Sockets client manager.
  *
- * @param server
  * @constructor
  */
-function ConnectionManager(server) {
-
-  this.Server = new WebSocketServer({
-    httpServer: server,
-    autoAcceptConnections: false
-  });
+function ConnectionManager() {
 
   this.socketConnections = [];
-  this.setupListeners();
 
+  // Create a TCP socket listener
+  this.Server = net.Server(connectionListeners.bind(this));
+  this.Server.listen(8000);
+  console.log('System waiting at http://localhost:8000');
 }
 
-ConnectionManager.prototype.setupListeners = function setupListeners() {
-  this.Server.on('request', request => {
+function connectionListeners(socket) {
 
-    if (!originIsAllowed(request.origin)) {
-      // Make sure we only accept requests from an allowed origin
-      request.reject();
-      logger.log('info', (new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
-      return;
+  this.socketConnections.push(socket);
+  logger.log('info', new Date() + ' Connection accepted: ' + socket.remoteAddress + ":" + socket.remotePort);
+
+  // 'data' is an event that means that a message was just sent by the
+  // client application
+  socket.on('data', function (msg_sent) {
+    console.log('hit here');
+    // Loop through all of our sockets and send the data
+    for (var i = 0; i < this.socketConnections.length; i++) {
+      // Don't send the data back to the original sender
+      if (this.socketConnections[i] == socket) // don't send the message to yourself
+        continue;
+      // Write the msg sent by chat client
+      this.socketConnections[i].write(msg_sent);
     }
-
-    const connection = request.accept(undefined, request.origin);
-    this.socketConnections.push(connection);
-
-    logger.log('info', new Date() + ' Connection accepted.');
-    connection.on('message', message => {
-      if (message.type === 'utf8') {
-        connection.sendUTF(message.utf8Data);
-      }
-      else if (message.type === 'binary') {
-        connection.sendBytes(message.binaryData);
-      }
-    });
-
-    connection.on('close', () => {
-
-      const index = this.socketConnections.indexOf(connection);
-      if (index > -1) {
-        this.socketConnections.splice(index, 1);
-      }
-
-      logger.log('info', (new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
-    });
-  });
-
-};
-
-function originIsAllowed(origin) {
-  // @TODO: Set the origin of the web socket and verify here
-  // return config.get('allowedOrigins').indexOf(origin) !== -1;
-  //return origin !== undefined;
-  return true;
+  }.bind(this));
+  // Use splice to get rid of the socket that is ending.
+  // The 'end' event means tcp client has disconnected.
+  socket.on('end', function () {
+    var i = this.socketConnections.indexOf(socket);
+    this.socketConnections.splice(i, 1);
+    logger.log('info', (new Date()) + ' Peer ' + socket.remoteAddress + ' disconnected.');
+  }.bind(this));
 }
 
 module.exports = ConnectionManager;

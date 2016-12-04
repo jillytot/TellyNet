@@ -38,7 +38,16 @@ const server = http.listen(config.get('port'), config.get('ip'),() => {
 
   Twitch.setupConnection(config.get('twitch').events);
 
+
+}).on('error', function(err) {
+  logger.log('info', 'Server error: ' + err + ' ' + new Date());
+  console.log(err);
 });
 
-const connectionManager = new ConnectionManager(server);
+http.on('exit', function () {
+  logger.log('info', 'Server is exiting. ' + new Date());
+  console.log('exiting...');
+});
+
+const connectionManager = new ConnectionManager();
 module.exports.cm = connectionManager;
