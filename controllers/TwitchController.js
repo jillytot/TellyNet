@@ -64,7 +64,9 @@ function registerMessageListener() {
 
     if (server.cm.socketConnections.length) {
       console.log(message);
-      server.cm.socketConnections[0].sendUTF(message);
+      server.cm.socketConnections.forEach((socket) => {
+        socket.sendEndMessage({message: message});
+      });
     }
 
     return StreamParser.parseTwitchContent(userstate, message);
