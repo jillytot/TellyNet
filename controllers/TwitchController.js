@@ -65,7 +65,7 @@ function registerMessageListener() {
     if (server.cm.socketConnections.length) {
       console.log(message);
       server.cm.socketConnections.forEach((socket) => {
-        socket.write(message);
+        socket.sendEndMessage({message: message});
       });
     }
 
