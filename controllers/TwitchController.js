@@ -28,9 +28,9 @@ const client = new TwitchIRC.client(clientConfig.options);
 const eventListenerMappings = {
   action: registerActionListener,
   message: registerMessageListener,
+  cheer: registerCheerListener,
   ban: registerBanListener,
-  chat: registerChatListener,
-  cheer: registerCheerListener
+  chat: registerChatListener
 };
 
 /**
@@ -63,11 +63,8 @@ function registerMessageListener() {
   client.on('message', (channel, userstate, message) => {
 
     if (server.cm.socketConnections.length) {
-      console.log(message);
       server.cm.socketConnections[0].sendUTF(message);
     }
-
-    return StreamParser.parseTwitchContent(userstate, message);
   });
 }
 
@@ -84,9 +81,13 @@ function registerChatListener() {
 }
 
 function registerCheerListener() {
-  /* client.on('cheer', (channel, userstate, message) => {
-    //@TODO
-  }); */
+  client.on('cheer', (channel, userstate, message) => {
+    if (server.cm.socketConnections.length) {
+      console.log(userstate);
+      server.cm.socketConnections[0].sendUTF(userstate);
+    }
+  });
 }
+
 
 module.exports.setupConnection = setupConnection;
