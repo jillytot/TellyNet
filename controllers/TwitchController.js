@@ -6,6 +6,7 @@ const StreamParser = require('../src/parsers/StreamParser');
 const config = require('../config/config');
 const logger = require('winston');
 const server = require('../src/server');
+const _ = require('lodash');
 
 // Configurations stored using node-convict
 const clientConfig = {
@@ -53,18 +54,38 @@ function setupConnection(events) {
     });
 }
 
+//@TODO: move this to the ConnectionManager
+function getSocketConnectionsByChannel(channel) {
+  return _.filter(server.cm.socketConnections, {channel: channel});
+}
+
+function sendSocketMessage(type, channel, userstate, message) {
+
+  if (server.cm.socketConnections.length) {
+
+    let socketConnections = getSocketConnectionsByChannel(channel);
+    if (socketConnections.length !== 0) {
+
+      console.log(`Sending message: ${message} over channel: ${channel} `);
+      let serverMessage = StreamParser.parseTwitchContent(type, channel, userstate, message);
+
+      // Send the message to each socket connection in the channel
+      socketConnections.forEach((sc) => {
+        sc.connection.sendUTF(JSON.stringify(serverMessage));
+      });
+    }
+  }
+}
+
 function registerActionListener() {
   client.on('action', (channel, userstate, message) => {
-    return StreamParser.parseTwitchContent(userstate, message);
+    sendSocketMessage('action', channel, userstate, message);
   });
 }
 
 function registerMessageListener() {
   client.on('message', (channel, userstate, message) => {
-
-    if (server.cm.socketConnections.length) {
-      server.cm.socketConnections[0].sendUTF(message);
-    }
+    sendSocketMessage('message', channel, userstate, message);
   });
 }
 
@@ -82,12 +103,8 @@ function registerChatListener() {
 
 function registerCheerListener() {
   client.on('cheer', (channel, userstate, message) => {
-    if (server.cm.socketConnections.length) {
-      console.log(userstate);
-      server.cm.socketConnections[0].sendUTF(userstate);
-    }
+    sendSocketMessage('cheer', channel, userstate, message);
   });
 }
-
 
 module.exports.setupConnection = setupConnection;

@@ -30,15 +30,38 @@ fs.readdirSync(routePath).forEach(file => {
  * Connecting to the express server
  * @type {http.Server}
  */
-const server = http.listen(config.get('port'), config.get('ip'),() => {
+const server = http.listen(config.get('port'), config.get('ip'), () => {
   const host = server.address().address;
   const port = server.address().port;
 
   logger.log('info', 'TellyNet activated http://%s:%s', host, port);
 
   Twitch.setupConnection(config.get('twitch').events);
-
 });
+
+// this function is called when you want the server to die gracefully
+// i.e. wait for existing connections
+var gracefulShutdown = function() {
+  console.log("Received kill signal, shutting down gracefully.");
+  server.close(function() {
+    connectionManager.shutDown();
+    console.log("Closed out remaining connections.");
+    process.exit()
+  });
+
+  // if after
+  setTimeout(function() {
+    console.error("Could not close connections in time, forcefully shutting down");
+    connectionManager.shutDown();
+    process.exit()
+  }, 10*1000);
+};
+
+// listen for TERM signal .e.g. kill
+process.on ('SIGTERM', gracefulShutdown);
+
+// listen for INT signal e.g. Ctrl-C
+process.on ('SIGINT', gracefulShutdown);
 
 const connectionManager = new ConnectionManager(server);
 module.exports.cm = connectionManager;
